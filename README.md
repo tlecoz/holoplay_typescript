@@ -49,4 +49,4 @@ Look at this at this class and the index.html to see how it works
 You can see the demo here : http://beginfill.com/holoplay_typescript/demo/
 
 
-(known issue : in windowed mode, the parallax works as expected when you are in front of the device, but if you move too far, the view become incorrect ; I tryed to fix it as much as possible, it's not perfect but it's usable most of the time ; there is no problem in fullscreen)
+(known issue : in windowed mode, the parallax works as expected when you are in front of the device, but if you move too far, the view become incorrect ; I tryed to fix it as much as possible. It's not perfect but it's usable most of the time ; there is no problem in fullscreen)
