@@ -1,0 +1,5 @@
+{
+  "globalDependencies": {
+    "three": "file:libs/threejs/three.d.ts"
+  }
+}
