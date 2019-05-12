@@ -1,0 +1,46 @@
+<html>
+<head>
+<script src="build/three.min.js" ></script>
+<script src="build/gl-matrix.js" ></script>
+<script src="build/HoloMultiViewRenderer.js" ></script>
+<script src="build/HoloScreen.js" ></script>
+<script src="build/HoloEppRom.js" ></script>
+<script src="build/HoloPlay.js" ></script>
+<script src="build/HoloplayApp.js" ></script>
+<script src="build/App.js" ></script>
+</head>
+<style>
+*{
+  margin:0;
+  padding:0;
+  overflow: hidden;
+}
+</style>
+<body onload="init()">
+  <script>
+
+    //console.log(Math.pow(2,9))
+
+
+    var app
+    function init(){
+      app = new App(TextureQuality.HIGH,ViewQuality.MEDIUM,true);
+      app.addEventListener("click",function(){app.getFullscreen()});
+      app.useBlackBorderAroundFullscreen(100);
+      animate()
+    }
+    var a = 0;
+    function animate(){
+      a += 0.05;
+      app.fieldOfVision = 35+(Math.sin(a*0.15)*25);
+      //console.log(app.fieldOfVision)
+      app.update();
+      app.holoplay.depthRatio = 1.5 //+ Math.sin(a) * 0.8;
+      requestAnimationFrame(animate);
+    }
+
+
+
+  </script>
+</body>
+</html>
