@@ -3,7 +3,14 @@ an implementation of the library Holoplay.js (based on Three.js) in typescript.
 (It mush be used with the holographic display "the looking glass") 
 More info about it here : https://lookingglassfactory.com/ 
 
-The project is decomposed into classes : 
+
+My implementation doesn't represents exactly the original Holoplay.js create by the LookingGlass - team. 
+I customize a bit the calibration to make it workable in windowed-mode. 
+
+(known issue : in windowed mode, the parallax works as expected when you are in front of the device, but if you move too far, the view become incorrect ; I tryed to fix it as much as possible, it's not perfect but it's usable most of the time ; there is no problem in fullscreen)
+
+
+Contrary to Holoplay.js I decomposed the project into classes : 
 
 - HoloMultiViewRenderer : it represents the "spritesheet-texture" containing all the views of the scene 
 
