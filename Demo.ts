@@ -1,4 +1,4 @@
-class App extends HoloplayApp {
+class Demo extends HoloplayApp {
 
 
 
