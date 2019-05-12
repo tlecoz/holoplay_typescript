@@ -29,8 +29,8 @@ class HoloplayApp {
     this.holoplay.init(textureQuality,viewQuality);
   }
 
-  public get paralaxRatio():number{return this.holoplay.depthRatio}
-  public set paralaxRatio(n:number){this.holoplay.depthRatio = n;}
+  public get parallaxRatio():number{return this.holoplay.depthRatio}
+  public set parallaxRatio(n:number){this.holoplay.depthRatio = n;}
 
   public getFullscreen():void{ this.renderer.domElement.requestFullscreen(); }
 

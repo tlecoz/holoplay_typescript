@@ -12,6 +12,8 @@ class HoloplayApp {
         this.holoplay = new HoloPlay(this.scene, this.camera, this.renderer, useEppRom);
         this.holoplay.init(textureQuality, viewQuality);
     }
+    get parallaxRatio() { return this.holoplay.depthRatio; }
+    set parallaxRatio(n) { this.holoplay.depthRatio = n; }
     getFullscreen() { this.renderer.domElement.requestFullscreen(); }
     useBlackBorderAroundFullscreen(borderSize = 100) {
         this.holoplay.useBlackBorderAroundFullscreen(borderSize);
