@@ -29,6 +29,9 @@ class HoloplayApp {
     this.holoplay.init(textureQuality,viewQuality);
   }
 
+  public get hologramEffectRatio():number{return this.holoplay.depthRatio}
+  public set hologramEffectRatio(n:number){this.holoplay.depthRatio = n;}
+
   public getFullscreen():void{ this.renderer.domElement.requestFullscreen(); }
 
   public useBlackBorderAroundFullscreen(borderSize:number=100){
