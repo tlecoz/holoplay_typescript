@@ -28,8 +28,6 @@ class HoloplayApp {
         this.camera.updateProjectionMatrix();
     }
     addEventListener(eventName, func) { this.renderer.domElement.addEventListener(eventName, func); }
-    update() {
-        this.holoplay.update();
-    }
+    update() { this.holoplay.update(); }
 }
 //# sourceMappingURL=HoloplayApp.js.map

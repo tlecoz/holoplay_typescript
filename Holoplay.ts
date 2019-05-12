@@ -50,11 +50,8 @@ class HoloPlay {
 
     var textureSize = Math.pow(2,9 + textureQuality);
     var nb = 4 + viewQuality;
-    //this.multiViewRenderer = new HoloMultiViewRenderer(this,viewWidth,viewHeight,nbX,nbY);
+
     this.multiViewRenderer = new HoloMultiViewRenderer(this,textureSize/nb,textureSize/nb,nb,nb);
-
-
-    //this.screen = new HoloScreen(this,flipX,flipY);
     this.screen = new HoloScreen(this);
 
     this.finalRenderScene.add(this.finalRenderCamera);
@@ -112,8 +109,6 @@ class HoloPlay {
   public update():void{
 
     this.multiViewRenderer.captureViews();
-
-
 
     if(document["fullscreen"] && this.useBorderInFullscreen && window.innerWidth == 2560 && window.innerHeight == 1600){
       this.renderer.setScissorTest(true);

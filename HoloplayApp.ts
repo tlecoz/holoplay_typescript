@@ -18,10 +18,6 @@ class HoloplayApp {
     this.renderer.setSize(window.innerWidth,window.innerHeight);
     document.body.appendChild(this.renderer.domElement);
 
-    //var mc = this.renderer.domElement;
-    //mc.addEventListener("click", function(){ mc.requestFullscreen();});
-
-
     var th = this;
     window.addEventListener("resize",function(){ th.holoplay.onResize(); })
 
@@ -50,10 +46,7 @@ class HoloplayApp {
 
   public addEventListener(eventName:string,func:any):void{ this.renderer.domElement.addEventListener(eventName,func); }
 
-
-  public update():void{
-    this.holoplay.update();
-  }
+  public update():void{ this.holoplay.update(); }
 
 
 

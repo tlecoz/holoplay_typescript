@@ -8,8 +8,6 @@ class HoloScreen extends THREE.Mesh {
   constructor(holoplay:HoloPlay){
 
 
-
-
     super(new THREE.PlaneGeometry(1,1),new THREE.ShaderMaterial({
       vertexShader:`
       varying vec2 iUv;
@@ -104,13 +102,7 @@ class HoloScreen extends THREE.Mesh {
     newPitch *= Math.cos(Math.atan(1.0 / holo.slope ));
     uniforms.pitch.value = newPitch;
 
-
-
-
-
     this.multiViewRenderer.viewCone = Math.sqrt(newPitch  * screenInches  )   *  (window.innerHeight/1600) / (5 * 2560/window.innerWidth)   * this._depthRatio;
-
-    //console.log("this.multiViewRenderer.viewCone = ",this.multiViewRenderer.viewCone,"  :  ",this._depthRatio)
 
     //tilt
     var newTilt = window.innerHeight / (window.innerWidth * holo.slope);
@@ -127,9 +119,6 @@ class HoloScreen extends THREE.Mesh {
 
 
   public init(dpi:number, pitch:number, slope:number, center:number){
-        console.log("INIT => ",dpi,pitch,slope,center)
-
-
         const uniforms:any = this.uniforms;
 
         this.updateViewConePitchAndTilt();
@@ -143,7 +132,6 @@ class HoloScreen extends THREE.Mesh {
         //uniforms.subp.value = 1/(this.multiViewRenderer.viewWidth*3)
         //uniforms.subp.value = 1/(screenW * 3);
         uniforms.subp.value = 1 / (this.multiViewRenderer.width*3)   //(dx*3) ;
-
 
         uniforms.tilesX.value = this.multiViewRenderer.nbX;
         uniforms.tilesY.value = this.multiViewRenderer.nbY;

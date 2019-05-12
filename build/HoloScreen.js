@@ -97,7 +97,6 @@ class HoloScreen extends THREE.Mesh {
         this.updateViewConePitchAndTilt();
     }
     init(dpi, pitch, slope, center) {
-        console.log("INIT => ", dpi, pitch, slope, center);
         const uniforms = this.uniforms;
         this.updateViewConePitchAndTilt();
         uniforms.center.value = center;
