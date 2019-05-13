@@ -44,7 +44,7 @@ it allow you to handle a mouse-event (for example) directly from the app
 
 
 I join a class Demo that extends HoloplayApp 
-Look at this at this class and the index.html to see how it works
+Look at this class and the index.html to see how it works
 
 You can see the demo here : http://beginfill.com/holoplay_typescript/demo/
 
