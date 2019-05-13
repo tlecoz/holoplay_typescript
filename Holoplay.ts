@@ -4,6 +4,7 @@ class TextureQuality {
   public static MEDIUM:number = 2;    //2048
   public static HIGH:number = 3;      //4096
   public static VERY_HIGH:number = 4; //8192
+  public static ULTRA:number = 5;     //16384
 }
 
 class ViewQuality {

@@ -5,6 +5,7 @@ TextureQuality.LOW = 1;
 TextureQuality.MEDIUM = 2;
 TextureQuality.HIGH = 3;
 TextureQuality.VERY_HIGH = 4;
+TextureQuality.ULTRA = 5;
 class ViewQuality {
 }
 ViewQuality.VERY_LOW = 0;
