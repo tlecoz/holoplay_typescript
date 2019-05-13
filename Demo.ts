@@ -18,7 +18,7 @@ class Demo extends HoloplayApp {
 
     var cubes = this.cubes = [];
     var group = this.group = new THREE.Group();
-    //var cubeGeometry = new THREE.CubeGeometry(1,1,1)//THREE.SphereGeometry(1,30,30);
+    //var cubeGeometry = new THREE.CubeGeometry(2,2,2)//THREE.SphereGeometry(1,30,30);
     var cubeGeometry = new THREE.SphereGeometry(1,30,30);
     var cubeMaterial = new THREE.MeshLambertMaterial()//{opacity:0.5,transparent:true});
 

@@ -102,7 +102,11 @@ class HoloScreen extends THREE.Mesh {
     newPitch *= Math.cos(Math.atan(1.0 / holo.slope ));
     uniforms.pitch.value = newPitch;
 
+    //this.multiViewRenderer.viewCone = Math.sqrt(newPitch  * screenInches  )   *  (window.innerHeight/1600) / (5 * 2560/window.innerWidth)   * this._depthRatio;
+
     this.multiViewRenderer.viewCone = Math.sqrt(newPitch  * screenInches  )   *  (window.innerHeight/1600) / (5 * 2560/window.innerWidth)   * this._depthRatio;
+
+    uniforms.subp.value = (1 / (this.multiViewRenderer.width*3)) * (2560/window.innerWidth)
 
     //tilt
     var newTilt = window.innerHeight / (window.innerWidth * holo.slope);
