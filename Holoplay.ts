@@ -75,6 +75,8 @@ class HoloPlay {
     if(this.useEppRom) return this.eppRom.jsonObj.DPI.value;
     else return 338;
   }
+
+
   public get slope():number{
     if(this.useEppRom) return this.eppRom.jsonObj.slope.value;
     else return -5.392934799194336
@@ -111,6 +113,7 @@ class HoloPlay {
 
     this.multiViewRenderer.captureViews();
 
+    this.renderer.clear(true,true,true);
     if(document["fullscreen"] && this.useBorderInFullscreen && window.innerWidth == 2560 && window.innerHeight == 1600){
       this.renderer.setScissorTest(true);
       var size = this.fullscreenBorderSize;

@@ -89,6 +89,7 @@ class HoloScreen extends THREE.Mesh {
 
 
   public updateViewConePitchAndTilt():void{
+
     const uniforms:any = this.uniforms;
     const holo:HoloPlay = this.holoplay;
     if(!holo.ready) return;
@@ -104,13 +105,21 @@ class HoloScreen extends THREE.Mesh {
 
     //this.multiViewRenderer.viewCone = Math.sqrt(newPitch  * screenInches  )   *  (window.innerHeight/1600) / (5 * 2560/window.innerWidth)   * this._depthRatio;
 
-    this.multiViewRenderer.viewCone = Math.sqrt(newPitch  * screenInches  )   *  (window.innerHeight/1600) / (5 * 2560/window.innerWidth)   * this._depthRatio;
-
-    uniforms.subp.value = (1 / (this.multiViewRenderer.width*3)) * (2560/window.innerWidth)
-
     //tilt
     var newTilt = window.innerHeight / (window.innerWidth * holo.slope);
     uniforms.tilt.value = newTilt;
+
+    this.multiViewRenderer.viewCone = Math.sqrt(newPitch  * screenInches  )   *  (window.innerHeight/1600) / (5 * 2560/window.innerWidth)   * this._depthRatio;
+    //console.log("=> ",newTilt,holo.slope)
+
+    var ratio =   window.innerWidth / (2560 * window.innerHeight/1600)  ;
+
+    uniforms.subp.value = (1 / (this.multiViewRenderer.width*3)) * ratio
+
+    //  uniforms.subp.value =  (1 / this.multiViewRenderer.width/3) * (2560  / window.innerWidth);//1 / (this.multiViewRenderer.width*3)/ (window.innerWidth/window.innerHeight);
+
+
+
   }
 
   public get depthRatio():number{return this._depthRatio};

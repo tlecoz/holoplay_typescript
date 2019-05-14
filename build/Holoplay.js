@@ -80,6 +80,7 @@ class HoloPlay {
     }
     update() {
         this.multiViewRenderer.captureViews();
+        this.renderer.clear(true, true, true);
         if (document["fullscreen"] && this.useBorderInFullscreen && window.innerWidth == 2560 && window.innerHeight == 1600) {
             this.renderer.setScissorTest(true);
             var size = this.fullscreenBorderSize;
