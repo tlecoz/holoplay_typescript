@@ -13,9 +13,6 @@ Contrary to Holoplay.js I decomposed the project into classes :
 
 - HoloMultiViewRenderer : it represents the "spritesheet-texture" containing all the views of the scene 
 
-- TextureQuality : an enumeration of values in power-of-two (from 512 to 8192) that will be used as size for the HoloMultiViewRenderer 
-- ViewQuality : an enumeration of values (from 4 to 8) that will be used as grid-size for the HoloMultiViewRenderer 
-
 - HoloScreen : it represent the final output (the holographic shader is here)  
 
 - HoloEppRom : it handle the connection with the driver and apply the calibration value(pitch, slope and center ) on the HoloScreen
