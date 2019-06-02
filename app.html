@@ -1,0 +1,55 @@
+<html>
+<head>
+
+
+<script src="build/holo.js" ></script>
+<script src="build/Demo.js" ></script>
+<script src="build/Test.js" ></script>
+</head>
+<style>
+*{
+  margin:0;
+  padding:0;
+  overflow: hidden;
+}
+</style>
+<body onload="init()">
+  <script>
+
+    var app
+    function init(){
+      var quilt = {
+        width:4096,
+        height:4096,
+        nbX:8,
+        nbY:8
+      }
+      var quiltWidth = 4096;
+      var quiltHeight = 4096;
+      var nbViewX = 8;
+      var nbViewY = 8;
+      //var mode = HoloAppType.CLASSIC_RENDERING;
+      //var mode = HoloAppType.HOLOGRAM;
+      var mode = HoloAppType.HOLOGRAM_VIDEO_ENCODER;
+      //var mode = HoloAppType.QUILT_VIDEO_ENCODER;
+      app = new Test(quilt,mode);
+      //app.useClassicRendering = true;
+
+
+      app.addEventListener("click",function(){app.getFullscreen()});
+      app.useBlackBorderAroundFullscreen(100);
+      animate()
+    }
+
+    var time = 0;
+    function animate(){
+      time += 0.05;
+      app.fieldOfVision = 60//+(Math.sin(time*0.15)*25);
+      app.parallaxRatio = 0.5;
+      app.update();
+      requestAnimationFrame(animate);
+    }
+
+  </script>
+</body>
+</html>

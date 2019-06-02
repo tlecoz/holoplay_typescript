@@ -21,7 +21,6 @@ class HoloScreen extends THREE.Mesh {
         uniform float tilesY;
         uniform float numViews;
 
-
         varying vec2 iUv;
 
         vec2 texArr(in vec3 uvz, out vec2 result) {
@@ -81,16 +80,16 @@ class HoloScreen extends THREE.Mesh {
         const holo = this.holoplay;
         if (!holo.ready)
             return;
-        var aspect = window.innerWidth / window.innerHeight;
-        var screenInches = (window.innerWidth / holo.DPI);
+        var aspect = holo.width / holo.height;
+        var screenInches = (holo.width / holo.DPI);
         var newPitch = holo.pitch * screenInches;
         newPitch *= Math.cos(Math.atan(1.0 / holo.slope));
         uniforms.pitch.value = newPitch;
-        var newTilt = window.innerHeight / (window.innerWidth * holo.slope);
+        uniforms.center.value = holo.center * this._depthRatio;
+        var newTilt = holo.height / (holo.width * holo.slope);
         uniforms.tilt.value = newTilt;
-        this.multiViewRenderer.viewCone = Math.sqrt(newPitch * screenInches) * (window.innerHeight / 1600) / (5 * 2560 / window.innerWidth) * this._depthRatio;
-        var ratio = window.innerWidth / (2560 * window.innerHeight / 1600);
-        uniforms.subp.value = (1 / (this.multiViewRenderer.width * 3)) * ratio;
+        this.multiViewRenderer.viewCone = 40 * this._depthRatio;
+        uniforms.subp.value = 1 / (2560 * 3);
     }
     get depthRatio() { return this._depthRatio; }
     ;
@@ -102,7 +101,7 @@ class HoloScreen extends THREE.Mesh {
         const uniforms = this.uniforms;
         this.updateViewConePitchAndTilt();
         uniforms.center.value = center;
-        uniforms.subp.value = 1 / (this.multiViewRenderer.width * 3);
+        uniforms.subp.value = 1 / (2560 * 3);
         uniforms.tilesX.value = this.multiViewRenderer.nbX;
         uniforms.tilesY.value = this.multiViewRenderer.nbY;
         uniforms.numViews.value = this.multiViewRenderer.nbView;

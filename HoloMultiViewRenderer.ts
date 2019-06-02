@@ -32,22 +32,24 @@ class HoloMultiViewRenderer extends THREE.WebGLRenderTarget {
 
 
   constructor(holoplay:HoloPlay,viewWidth:number=1024,viewHeight:number=1024,nbX:number=8,nbY:number=6){
-    super(viewWidth * nbX, viewHeight * nbY);
+    super(2048,2048,{ format: THREE.RGBAFormat });
 
     this.scene = holoplay.scene;
     this.camera = holoplay.camera;
     this.renderer = holoplay.renderer;
 
+    this.init(viewWidth,viewHeight,nbX,nbY);
+  }
 
-
+  public init(viewWidth:number=1024,viewHeight:number=1024,nbX:number=8,nbY:number=6){
     this.viewW = viewWidth;
     this.viewH = viewHeight;
     this.x = nbX;
     this.y = nbY;
     this.w = viewWidth * nbX;
     this.h = viewHeight * nbY;
-
-      this.setupCameras();
+    this.setSize(this.w,this.h);
+    this.setupCameras();
   }
 
 
@@ -96,8 +98,8 @@ class HoloMultiViewRenderer extends THREE.WebGLRenderTarget {
     //render texture dimensions
     var nbX = this.nbX;
     var nbY = this.nbY;
-    var renderSizeX = this.viewW;//renderResolution / tilesX;
-    var renderSizeY = this.viewH;//renderResolution / tilesY;
+    var renderSizeX = this.viewW>>0;//renderResolution / tilesX;
+    var renderSizeY = this.viewH>>0;//renderResolution / tilesY;
 
     //arraycamera
     var cameras = [];
@@ -106,7 +108,7 @@ class HoloMultiViewRenderer extends THREE.WebGLRenderTarget {
     for ( y = 0; y < nbY; y ++ ) {
       for ( x = 0; x < nbX; x ++ ) {
         subCamera = new THREE.PerspectiveCamera();
-        subCamera.viewport = new THREE.Vector4( x * renderSizeX, y * renderSizeY, renderSizeX, renderSizeY );
+        subCamera.viewport = new THREE.Vector4( x * renderSizeX,y * renderSizeY, renderSizeX, renderSizeY );
         cameras.push(subCamera);
       }
     }
@@ -122,8 +124,12 @@ class HoloMultiViewRenderer extends THREE.WebGLRenderTarget {
 
       const renderer:THREE.WebGLRenderer = this.renderer;
 
+      //renderer.clearTarget(this,true,true,true)
+
       renderer.setRenderTarget(this);
       renderer.clear(true,true,true);
+
+
 
 
       const cam:any = this.camera;

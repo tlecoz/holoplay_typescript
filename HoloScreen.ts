@@ -30,7 +30,6 @@ class HoloScreen extends THREE.Mesh {
         uniform float tilesY;
         uniform float numViews;
 
-
         varying vec2 iUv;
 
         vec2 texArr(in vec3 uvz, out vec2 result) {
@@ -95,30 +94,20 @@ class HoloScreen extends THREE.Mesh {
     if(!holo.ready) return;
 
 
-
-    var aspect = window.innerWidth / window.innerHeight;
-    var screenInches = (window.innerWidth /  holo.DPI)   ;
+    var aspect = holo.width / holo.height;
+    var screenInches = (holo.width /  holo.DPI)   ;
     var newPitch = holo.pitch * screenInches ;
     //account for tilt in measuring pitch horizontally
     newPitch *= Math.cos(Math.atan(1.0 / holo.slope ));
     uniforms.pitch.value = newPitch;
-
-    //this.multiViewRenderer.viewCone = Math.sqrt(newPitch  * screenInches  )   *  (window.innerHeight/1600) / (5 * 2560/window.innerWidth)   * this._depthRatio;
+    uniforms.center.value = holo.center * this._depthRatio;
 
     //tilt
-    var newTilt = window.innerHeight / (window.innerWidth * holo.slope);
+    var newTilt = holo.height / (holo.width * holo.slope);
     uniforms.tilt.value = newTilt;
 
-    this.multiViewRenderer.viewCone = Math.sqrt(newPitch  * screenInches  )   *  (window.innerHeight/1600) / (5 * 2560/window.innerWidth)   * this._depthRatio;
-    //console.log("=> ",newTilt,holo.slope)
-
-    var ratio =   window.innerWidth / (2560 * window.innerHeight/1600)  ;
-
-    uniforms.subp.value = (1 / (this.multiViewRenderer.width*3)) * ratio
-
-    //  uniforms.subp.value =  (1 / this.multiViewRenderer.width/3) * (2560  / window.innerWidth);//1 / (this.multiViewRenderer.width*3)/ (window.innerWidth/window.innerHeight);
-
-
+    this.multiViewRenderer.viewCone = 40 * this._depthRatio;
+    uniforms.subp.value =  1 / (2560*3)
 
   }
 
@@ -136,15 +125,8 @@ class HoloScreen extends THREE.Mesh {
 
         this.updateViewConePitchAndTilt();
 
-        //center
-        //I need the relationship between the amount of pixels I have moved over to the amount of lenticulars I have jumped
-        //ie how many pixels are there to a lenticular?
-        uniforms.center.value = center // ((window.innerWidth/window.innerHeight) / 1.6) ;
-
-        //uniforms.subp.value = 1/(window.innerWidth*3)
-        //uniforms.subp.value = 1/(this.multiViewRenderer.viewWidth*3)
-        //uniforms.subp.value = 1/(screenW * 3);
-        uniforms.subp.value = 1 / (this.multiViewRenderer.width*3)   //(dx*3) ;
+        uniforms.center.value = center;
+        uniforms.subp.value = 1 / (2560*3)
 
         uniforms.tilesX.value = this.multiViewRenderer.nbX;
         uniforms.tilesY.value = this.multiViewRenderer.nbY;

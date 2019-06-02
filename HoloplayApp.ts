@@ -4,45 +4,46 @@ class HoloplayApp {
   protected camera:THREE.PerspectiveCamera;
   protected renderer:THREE.WebGLRenderer;
   public holoplay:HoloPlay;
+  public ctx:WebGLRenderingContext;
 
 
 
-  constructor(textureQuality:number,viewQuality:number,useEppRom:boolean=true){
+
+  constructor(quilt:{width:number,height:number,nbX:number,nbY:number},holoAppType:string=HoloAppType.HOLOGRAM){
 
     var fov = 35;
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(fov, window.innerWidth/window.innerHeight, 1, 10000);
-    this.camera.position.set(0,0,38);
-
+    this.camera = new THREE.PerspectiveCamera(fov, window.innerWidth/window.innerHeight, 1, 1000000);
+    this.camera.position.set(0,0,this.camera.getFocalLength());
+    console.log(this.camera.getFocalLength())
     this.renderer = new THREE.WebGLRenderer({alpha:true,preserveDrawingBuffer: true});
+    this.ctx = this.renderer.context;
+
     this.renderer.setClearAlpha(0);
     this.renderer.setClearColor(new THREE.Color(0),0);
     this.renderer.autoClear = true;
-    this.renderer.setSize(2560,1600);//window.innerWidth,window.innerHeight);
+  
     document.body.appendChild(this.renderer.domElement);
 
     var th = this;
     window.addEventListener("resize",function(){ th.holoplay.onResize(); })
 
-    this.holoplay = new HoloPlay(this.scene,this.camera,this.renderer,useEppRom);
-    this.holoplay.init(textureQuality,viewQuality);
+    this.holoplay = new HoloPlay(this.scene,this.camera,this.renderer,holoAppType);
+    this.holoplay.init(quilt.width,quilt.height,quilt.nbX,quilt.nbY);
     this.holoplay.onResize();
   }
+
+  public set onReady(f:Function){this.holoplay.eppRom.onReady = f;}
 
   public get parallaxRatio():number{return this.holoplay.depthRatio}
   public set parallaxRatio(n:number){this.holoplay.depthRatio = n;}
 
+  public getFullscreen():void{ this.renderer.domElement.requestFullscreen(); }
+  public useBlackBorderAroundFullscreen(borderSize:number=100){ this.holoplay.useBlackBorderAroundFullscreen(borderSize); }
 
 
-  public getFullscreen():void{
-
-
-    this.renderer.domElement.requestFullscreen();
-  }
-
-  public useBlackBorderAroundFullscreen(borderSize:number=100){
-    this.holoplay.useBlackBorderAroundFullscreen(borderSize);
-  }
+  public get useClassicRendering():boolean{return this.holoplay.useClassicRendering;}
+  public set useClassicRendering(b:boolean){this.holoplay.useClassicRendering = b;}
 
 
   public get fieldOfVision():number{  return this.camera.fov; }
@@ -56,7 +57,10 @@ class HoloplayApp {
 
   public addEventListener(eventName:string,func:any):void{ this.renderer.domElement.addEventListener(eventName,func); }
 
-  public update():void{ this.holoplay.update(); }
+  public update():void{
+
+    this.holoplay.update();
+   }
 
 
 

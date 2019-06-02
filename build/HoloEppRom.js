@@ -14,7 +14,11 @@ class HoloEppRom {
             OSName = "Linux";
         var th = this;
         var ws = new WebSocket('ws://localhost:11222/');
-        var finished = function () { ws.close(); };
+        var finished = function () {
+            ws.close();
+            if (th.onReady)
+                th.onReady();
+        };
         var timeout = setTimeout(function () {
             console.warn("Calibration not found in internal memory.");
             th.initialized = true;

@@ -30,7 +30,7 @@ class Demo extends HoloplayApp {
 
       c = new THREE.Color(Math.random(),Math.random(),Math.random()).getHex();
       //console.log(c)
-      cubes.push(new THREE.Mesh(cubeGeometry, new THREE.MeshPhysicalMaterial({color:c,metalness:Math.random(),roughness:Math.random() }))) //cubeMaterial));
+      cubes.push(new THREE.Mesh(cubeGeometry, new THREE.MeshPhysicalMaterial({color:c,metalness:Math.random()*0.5,roughness:Math.random()*0.25 }))) //cubeMaterial));
 
       cubes[i].material.needsUpdate = true;
       cubes[i].frustumCulled  = false;

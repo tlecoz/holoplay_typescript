@@ -1,16 +1,20 @@
 class HoloMultiViewRenderer extends THREE.WebGLRenderTarget {
     constructor(holoplay, viewWidth = 1024, viewHeight = 1024, nbX = 8, nbY = 6) {
-        super(viewWidth * nbX, viewHeight * nbY);
+        super(2048, 2048, { format: THREE.RGBAFormat });
         this.focalPointVector = new Float32Array(3);
         this.scene = holoplay.scene;
         this.camera = holoplay.camera;
         this.renderer = holoplay.renderer;
+        this.init(viewWidth, viewHeight, nbX, nbY);
+    }
+    init(viewWidth = 1024, viewHeight = 1024, nbX = 8, nbY = 6) {
         this.viewW = viewWidth;
         this.viewH = viewHeight;
         this.x = nbX;
         this.y = nbY;
         this.w = viewWidth * nbX;
         this.h = viewHeight * nbY;
+        this.setSize(this.w, this.h);
         this.setupCameras();
     }
     get nbX() { return this.x; }
@@ -43,8 +47,8 @@ class HoloMultiViewRenderer extends THREE.WebGLRenderTarget {
         this.startDist = this.viewScale;
         var nbX = this.nbX;
         var nbY = this.nbY;
-        var renderSizeX = this.viewW;
-        var renderSizeY = this.viewH;
+        var renderSizeX = this.viewW >> 0;
+        var renderSizeY = this.viewH >> 0;
         var cameras = [];
         var subCamera;
         var x, y, nbX = this.x, nbY = this.y;
