@@ -3,13 +3,7 @@ an implementation of the library Holoplay.js (based on Three.js) in typescript.
 (It mush be used with the holographic display "the looking glass") 
 More info about it here : https://lookingglassfactory.com/ 
 
-
-My implementation doesn't represents exactly the original Holoplay.js create by the LookingGlass - team. 
-I customize a bit the calibration to make it workable in windowed-mode. 
-
-
-
-Contrary to Holoplay.js I decomposed the project into classes : 
+the project is composed by theses classes : 
 
 - HoloMultiViewRenderer : it represents the "spritesheet-texture" containing all the views of the scene 
 
@@ -17,6 +11,12 @@ Contrary to Holoplay.js I decomposed the project into classes :
 
 - HoloEppRom : it handle the connection with the driver and apply the calibration value(pitch, slope and center ) on the HoloScreen
                If the connection failed, a default calibration will be applyed 
+               IMPORTANT : the default configuration is the confiration of my looking glass, you should update these values 
+                            by yours (you should see it in the console when the connection works)
+                            
+       the connection may failed because of the looking-glass-driver for three.js, don't know why
+       but I need to re-install it everyday if I want it to work 
+       (most of the time, it use the default values)
                
 - Holoplay : a top level object that drives the other classes 
 
