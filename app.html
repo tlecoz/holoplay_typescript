@@ -45,7 +45,7 @@
     function animate(){
       time += 0.05;
       app.fieldOfVision = 60//+(Math.sin(time*0.15)*25);
-      app.parallaxRatio = -0.5;
+      app.parallaxRatio = 0.75;
       app.update();
       requestAnimationFrame(animate);
     }
