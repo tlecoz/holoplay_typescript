@@ -39,9 +39,23 @@ it allow you to handle a mouse-event (for example) directly from the app
 - HoloplayApp.parallaxRatio allow you to customize the "strength" of the parallax (default is 1) 
 
 
-
 I join a class Demo that extends HoloplayApp 
 Look at this class and the index.html to see how it works
 
 You can see the demo here : http://beginfill.com/holoplay_typescript/demo/
+
+
+I recently added a class QuiltPlayer. 
+It's a video-player that take a video composed by a grid of views in input, apply the holographic shader and output the result. 
+You can create your "quilt-videos" with this tool (it's made with nwjs and should be usable on mac and linux but I'm using the Windows version)
+
+https://github.com/tlecoz/holoplayToMp4
+
+You can try the quilt-player here : 
+http://beginfill.com/quiltPlayer/ 
+
+and try to play this short video (a single second) inside 
+http://beginfill.com/quiltPlayer/output_6_6_2048_2048.mp4
+
+
 
