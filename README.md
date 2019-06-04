@@ -16,7 +16,7 @@ the project is composed by theses classes :
                             
        the connection may failed because of the looking-glass-driver for three.js, don't know why
        but I need to re-install it everyday if I want it to work 
-       (most of the time, it use the default values)
+       (most of the time my app use the default values)
                
 - Holoplay : a top level object that drives the other classes 
 
