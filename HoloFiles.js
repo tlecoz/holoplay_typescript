@@ -5,4 +5,5 @@
 "build/HoloScreen.js",
 "build/HoloEppRom.js",
 "build/Holoplay.js",
-"build/HoloplayApp.js"
+"build/HoloplayApp.js",
+"build/QuiltPlayer.js"

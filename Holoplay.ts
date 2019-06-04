@@ -9,7 +9,7 @@ class HoloPlay {
   public mode:string;
   public width:number;
   public height:number;
-  
+
   protected finalRenderScene:THREE.Scene;
   protected finalRenderCamera:THREE.Camera;
 
@@ -21,7 +21,7 @@ class HoloPlay {
   private fullscreenBorderSize:number = 100;
   private useEppRom:boolean = true;
   private quiltPlane:THREE.Mesh;
-
+  private quiltPlayer:boolean = false;
 
   constructor(scene:THREE.Scene,camera:THREE.PerspectiveCamera,renderer:THREE.WebGLRenderer, holoAppType:string = HoloAppType.HOLOGRAM){
     this.scene = scene;
@@ -32,30 +32,41 @@ class HoloPlay {
       holoAppType = HoloAppType.HOLOGRAM;
       this.useClassicRendering = true;
     }
+    if(holoAppType == HoloAppType.QUILT_PLAYER){
+      holoAppType = HoloAppType.HOLOGRAM;
+      this.quiltPlayer = true;
+
+    }
 
     this.mode = holoAppType;
 
   }
 
 
-  public init(textureW:number=4096,textureH:number=4096,nbViewX:number=7,nbViewY:number=7):void{
+  private quiltTexture:any = null;
+  private nbViewX:number;
+  private nbViewY:number;
+
+  public init(textureW:number=4096,textureH:number=4096,nbViewX:number=7,nbViewY:number=7,quiltVideo:HTMLVideoElement=null):void{
 
     this.finalRenderScene = new THREE.Scene();
     this.finalRenderCamera = new THREE.OrthographicCamera(-0.5,0.5,0.5,-0.5,0.001,300000);
     this.finalRenderCamera.position.z = 2;
 
+    this.nbViewX = nbViewX;
+    this.nbViewY = nbViewY;
 
 
 
+    if(quiltVideo) this.quiltTexture = new THREE.VideoTexture(quiltVideo);
+    else this.multiViewRenderer = new HoloMultiViewRenderer(this,textureW/nbViewX,textureH/nbViewY,nbViewX,nbViewY);
 
-    //this.multiViewRenderer = new HoloMultiViewRenderer(this,textureSize/nb,textureSize/nb,nb,nb);
-    this.multiViewRenderer = new HoloMultiViewRenderer(this,textureW/nbViewX,textureH/nbViewY,nbViewX,nbViewY);
     this.screen = new HoloScreen(this);
 
-    this.quiltPlane = new THREE.Mesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({map:this.multiViewRenderer.texture}))
+    this.quiltPlane = new THREE.Mesh(new THREE.PlaneGeometry(1,1),new THREE.MeshBasicMaterial({map:this.textureViews}))
     this.quiltPlane.material.needsUpdate = true;
 
-    console.log(this.multiViewRenderer.width,this.multiViewRenderer.height)
+    //console.log(this.multiViewRenderer.width,this.multiViewRenderer.height)
 
     this.finalRenderScene.add(this.finalRenderCamera);
     this.finalRenderScene.add(this.screen);
@@ -64,6 +75,23 @@ class HoloPlay {
     if(this.useEppRom) this.eppRom = new HoloEppRom(this);
     else this.initScreen(false);
 
+  }
+
+  public get nbX():number{
+    return this.nbViewX;
+  }
+  public get nbY():number{
+    return this.nbViewY;
+  }
+  public get nbView():number{
+    return this.nbViewX * this.nbViewY;
+  }
+
+
+  public get textureViews():any{
+    //console.log(this.quiltPlayer)
+    if(this.quiltPlayer == false) return this.multiViewRenderer.texture;
+    else return this.quiltTexture;
   }
 
 
@@ -147,9 +175,9 @@ class HoloPlay {
 
     }else{
 
-      if(this.mode == HoloAppType.QUILT_VIDEO_ENCODER) this.renderer.setSize(this.width,this.height);
+      this.renderer.setSize(this.width,this.height);
 
-      this.multiViewRenderer.captureViews();
+      if(!this.quiltPlayer) this.multiViewRenderer.captureViews();
 
 
       if(this.mode == HoloAppType.HOLOGRAM || this.mode == HoloAppType.HOLOGRAM_VIDEO_ENCODER){

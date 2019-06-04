@@ -69,7 +69,7 @@ class HoloScreen extends THREE.Mesh {
         }
       `,
       uniforms:{
-        multiTexture: {value: holoplay.multiViewRenderer.texture},
+        multiTexture: {value: holoplay.textureViews},
         pitch: {value:0},
         tilt: {value:0},
         center: {value:0},
@@ -79,6 +79,8 @@ class HoloScreen extends THREE.Mesh {
         tilesY: {value:0},
       }
     }))
+
+
 
     this.holoplay = holoplay;
     this.multiViewRenderer = holoplay.multiViewRenderer;
@@ -106,7 +108,7 @@ class HoloScreen extends THREE.Mesh {
     var newTilt = holo.height / (holo.width * holo.slope);
     uniforms.tilt.value = newTilt;
 
-    this.multiViewRenderer.viewCone = 40 * this._depthRatio;
+    if(this.multiViewRenderer) this.multiViewRenderer.viewCone = 40 * this._depthRatio;
     uniforms.subp.value =  1 / (2560*3)
 
   }
@@ -128,9 +130,9 @@ class HoloScreen extends THREE.Mesh {
         uniforms.center.value = center;
         uniforms.subp.value = 1 / (2560*3)
 
-        uniforms.tilesX.value = this.multiViewRenderer.nbX;
-        uniforms.tilesY.value = this.multiViewRenderer.nbY;
-        uniforms.numViews.value = this.multiViewRenderer.nbView;
+        uniforms.tilesX.value = this.holoplay.nbX;
+        uniforms.tilesY.value = this.holoplay.nbY;
+        uniforms.numViews.value = this.holoplay.nbView;
         this.material.needsUpdate = true;
   }
 

@@ -10,7 +10,11 @@ class HoloplayApp {
 
 
   constructor(quilt:{width:number,height:number,nbX:number,nbY:number},holoAppType:string=HoloAppType.HOLOGRAM){
+    if(quilt) this.init(quilt,holoAppType);
+  }
 
+  public init(quilt:{width:number,height:number,nbX:number,nbY:number},holoAppType:string=HoloAppType.HOLOGRAM,quiltVideo:HTMLVideoElement=null){
+    console.log("init",quilt)
     var fov = 35;
     this.scene = new THREE.Scene();
     this.camera = new THREE.PerspectiveCamera(fov, window.innerWidth/window.innerHeight, 1, 1000000);
@@ -22,16 +26,17 @@ class HoloplayApp {
     this.renderer.setClearAlpha(0);
     this.renderer.setClearColor(new THREE.Color(0),0);
     this.renderer.autoClear = true;
-  
+
     document.body.appendChild(this.renderer.domElement);
 
     var th = this;
     window.addEventListener("resize",function(){ th.holoplay.onResize(); })
 
     this.holoplay = new HoloPlay(this.scene,this.camera,this.renderer,holoAppType);
-    this.holoplay.init(quilt.width,quilt.height,quilt.nbX,quilt.nbY);
+    this.holoplay.init(quilt.width,quilt.height,quilt.nbX,quilt.nbY,quiltVideo);
     this.holoplay.onResize();
   }
+
 
   public set onReady(f:Function){this.holoplay.eppRom.onReady = f;}
 

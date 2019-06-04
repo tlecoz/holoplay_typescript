@@ -38,4 +38,7 @@ class HoloAppType {
   */
   public static CLASSIC_RENDERING:string = "CLASSIC_RENDERING";
 
+
+  public static QUILT_PLAYER:string = "QUILT_PLAYER";
+
 }

@@ -4,6 +4,8 @@ class HoloPlay {
         this.useBorderInFullscreen = false;
         this.fullscreenBorderSize = 100;
         this.useEppRom = true;
+        this.quiltPlayer = false;
+        this.quiltTexture = null;
         this.scene = scene;
         this.camera = camera;
         this.renderer = renderer;
@@ -11,17 +13,25 @@ class HoloPlay {
             holoAppType = HoloAppType.HOLOGRAM;
             this.useClassicRendering = true;
         }
+        if (holoAppType == HoloAppType.QUILT_PLAYER) {
+            holoAppType = HoloAppType.HOLOGRAM;
+            this.quiltPlayer = true;
+        }
         this.mode = holoAppType;
     }
-    init(textureW = 4096, textureH = 4096, nbViewX = 7, nbViewY = 7) {
+    init(textureW = 4096, textureH = 4096, nbViewX = 7, nbViewY = 7, quiltVideo = null) {
         this.finalRenderScene = new THREE.Scene();
         this.finalRenderCamera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.001, 300000);
         this.finalRenderCamera.position.z = 2;
-        this.multiViewRenderer = new HoloMultiViewRenderer(this, textureW / nbViewX, textureH / nbViewY, nbViewX, nbViewY);
+        this.nbViewX = nbViewX;
+        this.nbViewY = nbViewY;
+        if (quiltVideo)
+            this.quiltTexture = new THREE.VideoTexture(quiltVideo);
+        else
+            this.multiViewRenderer = new HoloMultiViewRenderer(this, textureW / nbViewX, textureH / nbViewY, nbViewX, nbViewY);
         this.screen = new HoloScreen(this);
-        this.quiltPlane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: this.multiViewRenderer.texture }));
+        this.quiltPlane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: this.textureViews }));
         this.quiltPlane.material.needsUpdate = true;
-        console.log(this.multiViewRenderer.width, this.multiViewRenderer.height);
         this.finalRenderScene.add(this.finalRenderCamera);
         this.finalRenderScene.add(this.screen);
         this.finalRenderScene.add(this.quiltPlane);
@@ -29,6 +39,21 @@ class HoloPlay {
             this.eppRom = new HoloEppRom(this);
         else
             this.initScreen(false);
+    }
+    get nbX() {
+        return this.nbViewX;
+    }
+    get nbY() {
+        return this.nbViewY;
+    }
+    get nbView() {
+        return this.nbViewX * this.nbViewY;
+    }
+    get textureViews() {
+        if (this.quiltPlayer == false)
+            return this.multiViewRenderer.texture;
+        else
+            return this.quiltTexture;
     }
     initScreen(useEppRom = true) {
         this.useEppRom = useEppRom;
@@ -92,9 +117,9 @@ class HoloPlay {
             this.renderer.render(this.scene, this.camera);
         }
         else {
-            if (this.mode == HoloAppType.QUILT_VIDEO_ENCODER)
-                this.renderer.setSize(this.width, this.height);
-            this.multiViewRenderer.captureViews();
+            this.renderer.setSize(this.width, this.height);
+            if (!this.quiltPlayer)
+                this.multiViewRenderer.captureViews();
             if (this.mode == HoloAppType.HOLOGRAM || this.mode == HoloAppType.HOLOGRAM_VIDEO_ENCODER) {
                 if (document["fullscreen"] && this.useBorderInFullscreen && window.innerWidth == 2560 && window.innerHeight == 1600) {
                     this.renderer.setScissorTest(true);

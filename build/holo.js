@@ -7882,6 +7882,7 @@ HoloAppType.HOLOGRAM = "HOLOGRAM";
 HoloAppType.HOLOGRAM_VIDEO_ENCODER = "HOLOGRAM_VIDEO_ENCODER";
 HoloAppType.QUILT_VIDEO_ENCODER = "QUILT_VIDEO_ENCODER";
 HoloAppType.CLASSIC_RENDERING = "CLASSIC_RENDERING";
+HoloAppType.QUILT_PLAYER = "QUILT_PLAYER";
 //# sourceMappingURL=HoloAppType.js.map
 
 class HoloMultiViewRenderer extends THREE.WebGLRenderTarget {
@@ -8020,7 +8021,6 @@ class HoloScreen extends THREE.Mesh {
         uniform float tilesY;
         uniform float numViews;
 
-
         varying vec2 iUv;
 
         vec2 texArr(in vec3 uvz, out vec2 result) {
@@ -8060,7 +8060,7 @@ class HoloScreen extends THREE.Mesh {
         }
       `,
             uniforms: {
-                multiTexture: { value: holoplay.multiViewRenderer.texture },
+                multiTexture: { value: holoplay.textureViews },
                 pitch: { value: 0 },
                 tilt: { value: 0 },
                 center: { value: 0 },
@@ -8088,7 +8088,8 @@ class HoloScreen extends THREE.Mesh {
         uniforms.center.value = holo.center * this._depthRatio;
         var newTilt = holo.height / (holo.width * holo.slope);
         uniforms.tilt.value = newTilt;
-        this.multiViewRenderer.viewCone = 40 * this._depthRatio;
+        if (this.multiViewRenderer)
+            this.multiViewRenderer.viewCone = 40 * this._depthRatio;
         uniforms.subp.value = 1 / (2560 * 3);
     }
     get depthRatio() { return this._depthRatio; }
@@ -8102,9 +8103,9 @@ class HoloScreen extends THREE.Mesh {
         this.updateViewConePitchAndTilt();
         uniforms.center.value = center;
         uniforms.subp.value = 1 / (2560 * 3);
-        uniforms.tilesX.value = this.multiViewRenderer.nbX;
-        uniforms.tilesY.value = this.multiViewRenderer.nbY;
-        uniforms.numViews.value = this.multiViewRenderer.nbView;
+        uniforms.tilesX.value = this.holoplay.nbX;
+        uniforms.tilesY.value = this.holoplay.nbY;
+        uniforms.numViews.value = this.holoplay.nbView;
         this.material.needsUpdate = true;
     }
 }
@@ -8183,6 +8184,8 @@ class HoloPlay {
         this.useBorderInFullscreen = false;
         this.fullscreenBorderSize = 100;
         this.useEppRom = true;
+        this.quiltPlayer = false;
+        this.quiltTexture = null;
         this.scene = scene;
         this.camera = camera;
         this.renderer = renderer;
@@ -8190,17 +8193,25 @@ class HoloPlay {
             holoAppType = HoloAppType.HOLOGRAM;
             this.useClassicRendering = true;
         }
+        if (holoAppType == HoloAppType.QUILT_PLAYER) {
+            holoAppType = HoloAppType.HOLOGRAM;
+            this.quiltPlayer = true;
+        }
         this.mode = holoAppType;
     }
-    init(textureW = 4096, textureH = 4096, nbViewX = 7, nbViewY = 7) {
+    init(textureW = 4096, textureH = 4096, nbViewX = 7, nbViewY = 7, quiltVideo = null) {
         this.finalRenderScene = new THREE.Scene();
         this.finalRenderCamera = new THREE.OrthographicCamera(-0.5, 0.5, 0.5, -0.5, 0.001, 300000);
         this.finalRenderCamera.position.z = 2;
-        this.multiViewRenderer = new HoloMultiViewRenderer(this, textureW / nbViewX, textureH / nbViewY, nbViewX, nbViewY);
+        this.nbViewX = nbViewX;
+        this.nbViewY = nbViewY;
+        if (quiltVideo)
+            this.quiltTexture = new THREE.VideoTexture(quiltVideo);
+        else
+            this.multiViewRenderer = new HoloMultiViewRenderer(this, textureW / nbViewX, textureH / nbViewY, nbViewX, nbViewY);
         this.screen = new HoloScreen(this);
-        this.quiltPlane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: this.multiViewRenderer.texture }));
+        this.quiltPlane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.MeshBasicMaterial({ map: this.textureViews }));
         this.quiltPlane.material.needsUpdate = true;
-        console.log(this.multiViewRenderer.width, this.multiViewRenderer.height);
         this.finalRenderScene.add(this.finalRenderCamera);
         this.finalRenderScene.add(this.screen);
         this.finalRenderScene.add(this.quiltPlane);
@@ -8208,6 +8219,21 @@ class HoloPlay {
             this.eppRom = new HoloEppRom(this);
         else
             this.initScreen(false);
+    }
+    get nbX() {
+        return this.nbViewX;
+    }
+    get nbY() {
+        return this.nbViewY;
+    }
+    get nbView() {
+        return this.nbViewX * this.nbViewY;
+    }
+    get textureViews() {
+        if (this.quiltPlayer == false)
+            return this.multiViewRenderer.texture;
+        else
+            return this.quiltTexture;
     }
     initScreen(useEppRom = true) {
         this.useEppRom = useEppRom;
@@ -8271,9 +8297,9 @@ class HoloPlay {
             this.renderer.render(this.scene, this.camera);
         }
         else {
-            if (this.mode == HoloAppType.QUILT_VIDEO_ENCODER)
-                this.renderer.setSize(this.width, this.height);
-            this.multiViewRenderer.captureViews();
+            this.renderer.setSize(this.width, this.height);
+            if (!this.quiltPlayer)
+                this.multiViewRenderer.captureViews();
             if (this.mode == HoloAppType.HOLOGRAM || this.mode == HoloAppType.HOLOGRAM_VIDEO_ENCODER) {
                 if (document["fullscreen"] && this.useBorderInFullscreen && window.innerWidth == 2560 && window.innerHeight == 1600) {
                     this.renderer.setScissorTest(true);
@@ -8294,6 +8320,11 @@ class HoloPlay {
 
 class HoloplayApp {
     constructor(quilt, holoAppType = HoloAppType.HOLOGRAM) {
+        if (quilt)
+            this.init(quilt, holoAppType);
+    }
+    init(quilt, holoAppType = HoloAppType.HOLOGRAM, quiltVideo = null) {
+        console.log("init", quilt);
         var fov = 35;
         this.scene = new THREE.Scene();
         this.camera = new THREE.PerspectiveCamera(fov, window.innerWidth / window.innerHeight, 1, 1000000);
@@ -8308,7 +8339,7 @@ class HoloplayApp {
         var th = this;
         window.addEventListener("resize", function () { th.holoplay.onResize(); });
         this.holoplay = new HoloPlay(this.scene, this.camera, this.renderer, holoAppType);
-        this.holoplay.init(quilt.width, quilt.height, quilt.nbX, quilt.nbY);
+        this.holoplay.init(quilt.width, quilt.height, quilt.nbX, quilt.nbY, quiltVideo);
         this.holoplay.onResize();
     }
     set onReady(f) { this.holoplay.eppRom.onReady = f; }
@@ -8333,4 +8364,58 @@ class HoloplayApp {
     }
 }
 //# sourceMappingURL=HoloplayApp.js.map
+
+class QuiltPlayer extends HoloplayApp {
+    constructor() {
+        super(null);
+        this.onPlay = null;
+        var btn = this.btn = document.createElement("input");
+        btn.style.position = "absolute";
+        btn.style.top = btn.style.left = "5px";
+        btn.style.width = "250px";
+        btn.style.height = "25px";
+        btn.innerText = "OPEN QUILT VIDEO FILE !";
+        btn.setAttribute("type", "file");
+        btn.setAttribute("accept", ".mp4");
+        document.body.appendChild(btn);
+        var videoPlayer = this.videoPlayer = document.createElement("video");
+        videoPlayer.style.position = "absolute";
+        videoPlayer.style.top = "50px";
+        videoPlayer.style.width = "600px";
+        videoPlayer.style.height = "600px";
+        videoPlayer.loop = true;
+        videoPlayer.controls = true;
+        var th = this;
+        var quilt = { width: 0, height: 0, nbX: 0, nbY: 0 };
+        videoPlayer.oncanplaythrough = function () {
+            th.init(quilt, HoloAppType.QUILT_PLAYER, videoPlayer);
+            th.addEventListener("click", function () { th.getFullscreen(); });
+            th.onReady = function () {
+                videoPlayer.play();
+                if (th.onPlay)
+                    th.onPlay();
+                th.onReady = null;
+            };
+            videoPlayer.oncanplaythrough = null;
+        };
+        btn.onchange = function (event) {
+            var name = event.srcElement.files[0].name;
+            var t = name.split(".")[0].split("_");
+            if (t.length != 5)
+                throw new Error("Invalid video name");
+            quilt.nbX = Number(t[1]);
+            quilt.nbY = Number(t[2]);
+            quilt.width = Number(t[3]);
+            quilt.height = Number(t[4]);
+            var reader = new FileReader();
+            reader.readAsDataURL(event.srcElement.files[0]);
+            var me = this;
+            reader.onload = function () {
+                var fileContent = reader.result;
+                videoPlayer.src = fileContent;
+            };
+        };
+    }
+}
+//# sourceMappingURL=QuiltPlayer.js.map
 

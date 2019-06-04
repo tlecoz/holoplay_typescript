@@ -1,0 +1,38 @@
+<html>
+<head>
+<script src="build/holo.js" ></script>
+</head>
+<style>
+*{
+  margin:0;
+  padding:0;
+  overflow: hidden;
+}
+</style>
+<body onload="init()">
+  <script>
+
+    var app
+    function init(){
+
+      app = new QuiltPlayer();
+      app.onPlay = function(){
+        animate()
+      }
+      //
+      //app.useBlackBorderAroundFullscreen(100);
+      //
+    }
+
+    var time = 0;
+    function animate(){
+      time += 0.05;
+      app.fieldOfVision = 60//+(Math.sin(time*0.15)*25);
+      app.parallaxRatio = 0.5;
+      app.update();
+      requestAnimationFrame(animate);
+    }
+
+  </script>
+</body>
+</html>

@@ -25,7 +25,7 @@ class Test extends HoloplayApp {
         bg.position.z = -150;
         bg.receiveShadow = true;
         bgGroup.add(bg);
-        var d = 25;
+        var d = 50;
         var d2 = d / 2;
         var n;
         var c;
@@ -37,7 +37,7 @@ class Test extends HoloplayApp {
             cubes[i].receiveShadow = true;
             cubes[i].position.set(d2 - Math.random() * d, d2 - Math.random() * d, d2 - Math.random() * d);
             cubes[i].rotation.set(Math.random(), Math.random(), Math.random());
-            scale = 1 + Math.random();
+            scale = 0.75 + Math.random() * 0.5;
             cubes[i].s = scale;
             cubes[i].a = Math.random() * Math.PI * 2;
             cubes[i].scale.set(scale, scale, scale);
@@ -52,6 +52,7 @@ class Test extends HoloplayApp {
         group.rotation.y += 0.001;
         group.rotation.x += 0.0075;
         group.rotation.z += 0.0015;
+        group.position.z = -25;
         let i, len = cubes.length;
         let n;
         for (i = 0; i < len; i++) {
