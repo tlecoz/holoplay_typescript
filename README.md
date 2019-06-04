@@ -52,11 +52,9 @@ You can create your "quilt-videos" with this tool (it's made with nwjs and shoul
 https://github.com/tlecoz/holoplayToMp4
 
 You can try the quilt-player here : 
-
 http://beginfill.com/quiltPlayer/ 
 
-and try to play this short video (a single second) inside 
-
+and try to play this short video (a single second) inside :
 http://beginfill.com/quiltPlayer/output_6_6_2048_2048.mp4
 
 
